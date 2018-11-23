@@ -1,1 +1,17 @@
-<button mat-flat-button color="primary">Primary</button>
+<form [formGroup]="form" class="form-container">
+  <mat-form-field>
+    <input matInput placeholder="Enter" formControlName="start">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Leave" formControlName="end">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select placeholder="Day of week" formControlName="dayOfWeek">
+      <mat-option *ngFor="let day of days" [value]="day.code">
+        {{ day.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" type="submit" (click)="onSubmit()">Submit</button>
+</form>

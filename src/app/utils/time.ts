@@ -7,7 +7,9 @@ const MINUTES = 60;
 const DAY_HOURS = 9;
 
 export class Time {
-  static getTime(time: string) {
+  public time: moment.Moment;
+
+  static getTime(time: string): moment.Moment {
     return moment(time, FORMAT);
   }
 
@@ -18,7 +20,17 @@ export class Time {
 
   static getHumanFormat(minutes: number) {
     const h = Math.floor(minutes / MINUTES);
-    const m = minutes % MINUTES;
+    const m = minutes - h * MINUTES;
     return `${h}h ${m}m`;
+  }
+
+  constructor(time: string) {
+    this.time = Time.getTime(time);
+  }
+
+  public diff(time: string, pretty?: boolean): string {
+    const b = Time.getTime(time);
+    const diff = Time.getDiff(this.time, b);
+    return pretty ? Time.getHumanFormat(diff) : `${diff}`;
   }
 }
