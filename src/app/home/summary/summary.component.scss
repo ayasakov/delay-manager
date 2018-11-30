@@ -1,0 +1,33 @@
+:host {
+  flex: 0 0 300px;
+  background-color: #4A4A4A;
+  color: #FFF;
+  padding: 10px;
+
+  & > hr {
+    margin: 16px 0;
+    height: 3px;
+    border: 0;
+    background: #FFF;
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+
+  & > span {
+    margin-bottom: 4px;
+  }
+
+  &__title {
+    font-size: 21px;
+    font-weight: 600;
+  }
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+}

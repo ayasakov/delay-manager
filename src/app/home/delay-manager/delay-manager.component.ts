@@ -49,7 +49,7 @@ export class DelayManagerComponent {
       this.delayManager[dayOfWeek] = this.delayManager[dayOfWeek] || 0;
       this.delayManager[dayOfWeek] += Number(diff);
 
-      console.log(Time.getHumanFormat(this.delayManager[dayOfWeek]));
+      this.delayManager = {...this.delayManager};
     }
   }
 

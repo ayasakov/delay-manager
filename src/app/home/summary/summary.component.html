@@ -1,0 +1,13 @@
+<h1>Summary</h1>
+
+<div *ngFor="let s of summary" class="item">
+  <span class="item__title">{{ s.day }}</span>
+  <span class="item__sub-title">{{ s.count | humanHours }}</span>
+</div>
+
+<hr *ngIf="total" />
+
+<div class="total" *ngIf="total">
+  <span>Total</span>
+  <span>{{ total | humanHours }}</span>
+</div>
