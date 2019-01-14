@@ -1,0 +1,9 @@
+<h2>{{ dayTitle }}</h2>
+
+<ng-container *ngFor="let time of data">
+  {{ time.from }} - {{ time.to }} <button (click)="delete(time)">x</button>
+</ng-container>
+
+{{ formattedTotal | humanHours }}
+
+<mat-checkbox color="primary" [(ngModel)]="isWorkDay">Working day</mat-checkbox>
