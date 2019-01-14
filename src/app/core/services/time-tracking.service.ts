@@ -3,10 +3,7 @@ import { LocalStorage } from '@ngx-pwa/local-storage';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { guid } from '../../utils/guid';
 import { catchError } from 'rxjs/operators';
-
-export class TimeTracking {
-  constructor(public id: string, public from: string, public to: string, public dayIndex: number) {}
-}
+import { TimeTracking } from '../interfaces/time-tracking.interface';
 
 @Injectable({
   providedIn: 'root'

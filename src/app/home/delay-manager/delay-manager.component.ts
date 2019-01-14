@@ -4,11 +4,7 @@ import { Time } from '../../utils/time';
 import { dayOfWeekMap } from '../../const/date-title';
 import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { Subscription } from 'rxjs';
-
-class DayOfWeek {
-  constructor(public code: string, public name: string) {
-  }
-}
+import { DayOfWeek } from '../../core/interfaces/day-of-week.interface';
 
 @Component({
   selector: 'app-delay-manager',
