@@ -21,7 +21,11 @@ export class Time {
   static getHumanFormat(minutes: number) {
     const h = Math.floor(minutes / MINUTES);
     const m = minutes - h * MINUTES;
-    return `${h}:${m}`;
+
+    const h_str = `${h}`.length === 1 ? `0${h}` : `${h}`;
+    const m_str = `${m}`.length === 1 ? `0${m}` : `${m}`;
+
+    return `${h_str}:${m_str}`;
   }
 
   constructor(time: string) {
