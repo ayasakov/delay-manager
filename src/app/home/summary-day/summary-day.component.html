@@ -1,6 +1,6 @@
 <h2>{{ dayTitle }}</h2>
 
-<ng-container *ngFor="let time of data">
+<ng-container *ngFor="let time of times">
   {{ time.from }} - {{ time.to }} <button (click)="delete(time)">x</button>
 </ng-container>
 

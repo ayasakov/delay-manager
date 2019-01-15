@@ -2,10 +2,8 @@ import { Component, Input } from '@angular/core';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
 import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { dayOfWeekMap } from '../../const/date-title';
-import { Time } from '../../utils/time';
-
-const REQUIRED_HOURS = 9;
-const MIN_IN_HOUR = 60;
+import { DAY_HOURS, MINUTES, Time } from '../../utils/time';
+import { isWorkingDay } from '../../utils/working-day';
 
 @Component({
   selector: 'app-summary-day',
@@ -19,9 +17,8 @@ export class SummaryDayComponent {
   total = 0;
   dayIndex = -1;
 
-  @Input() set workingDays(days: any ) {
-    const isWorkDay = this.dayIndex !== 0 && this.dayIndex !== 6; // Sunday and Saturday
-    this.isWorkDay = this.dayIndex in days ? days[this.dayIndex] : isWorkDay; // From storage or by default
+  @Input() set workingDays(days: any) {
+    this.isWorkDay = isWorkingDay(this.dayIndex, days);
   }
 
   @Input() set data(times: Array<TimeTracking>) {
@@ -33,12 +30,14 @@ export class SummaryDayComponent {
       this.total = times.reduce((res: number, t: TimeTracking) => {
         return res + +new Time(t.from).diff(t.to);
       }, 0);
+
+      return;
     }
     this.times = [];
   }
 
   get formattedTotal(): number {
-    return this.isWorkDay ? this.total - REQUIRED_HOURS * MIN_IN_HOUR : this.total;
+    return this.isWorkDay ? this.total - DAY_HOURS * MINUTES : this.total;
   }
 
   constructor(private timeTrackingService: TimeTrackingService) { }

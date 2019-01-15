@@ -3,8 +3,8 @@ import * as moment from 'moment';
 const FORMAT = 'HH:mm';
 const MILLISECONDS = 1000;
 const SECONDS = 60;
-const MINUTES = 60;
-const DAY_HOURS = 9;
+export const MINUTES = 60;
+export const DAY_HOURS = 9;
 
 export class Time {
   public time: moment.Moment;

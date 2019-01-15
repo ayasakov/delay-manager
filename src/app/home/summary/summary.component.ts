@@ -2,6 +2,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
+import { DAY_HOURS, MINUTES, Time } from '../../utils/time';
+import { isWorkingDay } from '../../utils/working-day';
 
 @Component({
   selector: 'app-summary',
@@ -24,7 +26,7 @@ export class SummaryComponent implements OnDestroy {
     this.items$ = this.timeTrackingService.getTimeTracking()
       .subscribe((items: Array<TimeTracking>) => this.timeTrackingProcess(items || []));
     this.days$ = this.timeTrackingService.getWorkingDays()
-      .subscribe((value: any) => this.workingDays = value);
+      .subscribe((value: any) => this.workingDaysProcess(value || {}));
   }
 
   ngOnDestroy() {
@@ -38,6 +40,27 @@ export class SummaryComponent implements OnDestroy {
       result[item.dayIndex].push(item);
       return result;
     }, {});
+    this.calculateTotal();
+  }
+
+  private workingDaysProcess(value: any) {
+    this.workingDays = value;
+    this.calculateTotal();
+  }
+
+  private calculateTotal() {
+    this.total = this.days.reduce((result: number, key: string) => {
+      const times: Array<TimeTracking> = this.summary[key] || [];
+
+      const totalTimes = times.reduce((res: number, t: TimeTracking) => {
+        return res + +new Time(t.from).diff(t.to);
+      }, 0);
+
+      const dayIndex = times.length ? times[0].dayIndex : -1;
+      const workHours = isWorkingDay(dayIndex, this.workingDays) ? totalTimes - DAY_HOURS * MINUTES : totalTimes;
+
+      return result + workHours;
+    }, 0);
   }
 
   public clear() {
