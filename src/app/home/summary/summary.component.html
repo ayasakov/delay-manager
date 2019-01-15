@@ -1,7 +1,7 @@
 <h1>Summary</h1>
 
 <div *ngFor="let day of days" class="item">
-  <app-summary-day [data]="summary[day]"></app-summary-day>
+  <app-summary-day [data]="summary[day]" [workingDays]="workingDays"></app-summary-day>
 </div>
 
 <hr *ngIf="total" />

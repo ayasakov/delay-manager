@@ -10,22 +10,11 @@ import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
 })
 export class SummaryComponent implements OnDestroy {
   items$: Subscription;
+  days$: Subscription;
 
   summary = {};
+  workingDays = {};
   total = 0;
-
-  /*@Input()
-  set delayManager(summary) {
-    this.summary = Object.keys(summary).sort().map(key => ({
-      day: dayOfWeekMap[key],
-      count: summary[key],
-    }));
-
-    const days = Object.keys(summary).length > 5 ? 5 : Object.keys(summary).length;
-    this.total = this.summary.map(i => i.count).reduce((s, i) => {
-      return s + i;
-    }, 0) - days * REQUIRED_HOURS * MIN_IN_HOUR;
-  }*/
 
   get days() {
     return Object.keys(this.summary);
@@ -34,10 +23,13 @@ export class SummaryComponent implements OnDestroy {
   constructor(private timeTrackingService: TimeTrackingService) {
     this.items$ = this.timeTrackingService.getTimeTracking()
       .subscribe((items: Array<TimeTracking>) => this.timeTrackingProcess(items || []));
+    this.days$ = this.timeTrackingService.getWorkingDays()
+      .subscribe((value: any) => this.workingDays = value);
   }
 
   ngOnDestroy() {
     this.items$.unsubscribe();
+    this.days$.unsubscribe();
   }
 
   private timeTrackingProcess(items: Array<TimeTracking>) {

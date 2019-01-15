@@ -6,4 +6,4 @@
 
 {{ formattedTotal | humanHours }}
 
-<mat-checkbox color="primary" [(ngModel)]="isWorkDay">Working day</mat-checkbox>
+<mat-checkbox color="primary" [(ngModel)]="isWorkDay" (change)="change()">Working day</mat-checkbox>

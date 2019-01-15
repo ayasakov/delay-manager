@@ -17,13 +17,17 @@ export class SummaryDayComponent {
   dayTitle = '';
   isWorkDay = false;
   total = 0;
+  dayIndex = -1;
+
+  @Input() set workingDays(days: any ) {
+    const isWorkDay = this.dayIndex !== 0 && this.dayIndex !== 6; // Sunday and Saturday
+    this.isWorkDay = this.dayIndex in days ? days[this.dayIndex] : isWorkDay; // From storage or by default
+  }
 
   @Input() set data(times: Array<TimeTracking>) {
     if (times && times.length) {
-      const dayIndex = times[0].dayIndex;
-
-      this.isWorkDay = dayIndex !== 0 && dayIndex !== 6; // Sunday and Saturday
-      this.dayTitle = dayOfWeekMap[dayIndex];
+      this.dayIndex = times[0].dayIndex;
+      this.dayTitle = dayOfWeekMap[this.dayIndex];
       this.times = times;
 
       this.total = times.reduce((res: number, t: TimeTracking) => {
@@ -41,5 +45,9 @@ export class SummaryDayComponent {
 
   public delete(item) {
     this.timeTrackingService.deleteTime(item);
+  }
+
+  public change() {
+    this.timeTrackingService.changeWorkingDays(this.dayIndex, this.isWorkDay);
   }
 }
