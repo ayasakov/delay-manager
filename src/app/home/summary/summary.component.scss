@@ -4,6 +4,8 @@
   color: #FFF;
   padding: 10px;
 
+  position: relative;
+
   & > hr {
     margin: 16px 0;
     height: 3px;
@@ -21,4 +23,14 @@
 .total {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.clear {
+  position: absolute;
+  bottom: 12px;
+
+  left: 50%;
+  transform: translateX(-50%);
 }

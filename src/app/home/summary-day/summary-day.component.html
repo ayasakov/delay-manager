@@ -1,9 +1,28 @@
-<h2>{{ dayTitle }}</h2>
+<div class="day-container day-header">
+  <h2>{{ dayTitle }}</h2>
+  <mat-checkbox
+    color="primary"
+    matTooltip="Working day"
+    matTooltipPosition="before"
+    [(ngModel)]="isWorkDay"
+    (change)="change()"></mat-checkbox>
+</div>
 
 <ng-container *ngFor="let time of times">
-  {{ time.from }} - {{ time.to }} <button (click)="delete(time)">x</button>
+  <div class="day-container">
+    <div>{{ time.from }} - {{ time.to }}</div>
+
+    <button
+      mat-icon-button
+      color="warn"
+      matTooltip="Delete"
+      matTooltipPosition="before"
+      (click)="delete(time)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </ng-container>
 
-<div>{{ total - diff | humanHours }}</div>
-
-<mat-checkbox color="primary" [(ngModel)]="isWorkDay" (change)="change()">Working day</mat-checkbox>
+<div class="day-total">
+  Day total: {{ total - diff | humanHours }}
+</div>

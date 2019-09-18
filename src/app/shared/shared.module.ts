@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HumanHoursPipe } from './pipes/human-hours.pipe';
 
@@ -17,6 +19,8 @@ import { HumanHoursPipe } from './pipes/human-hours.pipe';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatTooltipModule,
+    MatIconModule,
     ReactiveFormsModule,
     FormsModule,
   ],
@@ -30,6 +34,8 @@ import { HumanHoursPipe } from './pipes/human-hours.pipe';
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatTooltipModule,
+    MatIconModule,
     // Pipes
     HumanHoursPipe,
   ],

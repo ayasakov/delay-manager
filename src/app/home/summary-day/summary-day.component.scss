@@ -1,0 +1,15 @@
+.day-header {
+  padding-right: 12px;
+}
+
+.day-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.day-total {
+  line-height: 40px;
+  text-align: right;
+  font-weight: 600;
+}

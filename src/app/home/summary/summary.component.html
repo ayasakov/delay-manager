@@ -11,4 +11,12 @@
   <span>{{ total | humanHours }}</span>
 </div>
 
-<button mat-flat-button color="primary" type="submit" (click)="clear()">Clear history</button>
+<div class="clear">
+  <button
+    mat-flat-button
+    color="warn"
+    type="submit"
+    matTooltip="Remove data from local storage"
+    matTooltipPosition="above"
+    (click)="clear()">Clear history</button>
+</div>
