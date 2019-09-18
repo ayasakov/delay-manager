@@ -10,7 +10,7 @@
 
 <ng-container *ngFor="let time of times">
   <div class="day-container">
-    <div>{{ time.from }} - {{ time.to }}</div>
+    <div class="day-time" (click)="edit(time)">{{ time.from }} - {{ time.to }}</div>
 
     <button
       mat-icon-button

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LocalStorage } from '@ngx-pwa/local-storage';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { guid } from '../../utils/guid';
-import { catchError } from 'rxjs/operators';
+import { catchError, filter } from 'rxjs/operators';
 import { TimeTracking } from '../interfaces/time-tracking.interface';
 import { DayOfWeekService } from './day-of-week.service';
 
@@ -12,11 +12,13 @@ import { DayOfWeekService } from './day-of-week.service';
 export class TimeTrackingService {
   private items: BehaviorSubject<TimeTracking[]>;
   private processing: BehaviorSubject<boolean>;
+  private editFlow: Subject<TimeTracking>;
 
   protected keyTimes = 'times';
 
   constructor(private localStorage: LocalStorage, private dayOfWeekService: DayOfWeekService) {
     this.items = new BehaviorSubject<TimeTracking[]>([]);
+    this.editFlow = new Subject<TimeTracking>();
     this.processing = new BehaviorSubject<boolean>(false);
 
     this.init();
@@ -65,6 +67,11 @@ export class TimeTrackingService {
     return this.items.asObservable();
   }
 
+  public getEditFlow(): Observable<TimeTracking> {
+    return this.editFlow.asObservable()
+      .pipe(filter(time => !!time));
+  }
+
   public addTime(from: string, to: string, dayIndex: number) {
     if (!from || !to || !dayIndex) {
       console.log('err: time track wasn\'t added');
@@ -78,6 +85,22 @@ export class TimeTrackingService {
     items.push(item);
 
     this.updateTimesStorage(items);
+  }
+
+  public requestEditTime(time: TimeTracking) {
+    this.editFlow.next(time);
+  }
+
+  public editTime(time: TimeTracking) {
+    const times: TimeTracking[] = [...this.items.getValue()];
+    const idx = times.findIndex(t => t.id === time.id);
+    if (idx > -1) {
+      times.splice(idx, 1, time);
+      this.updateTimesStorage(times);
+      this.requestEditTime(null);
+      return;
+    }
+    console.log('err: something went wrong. There are no time with id=' + time.id);
   }
 
   public deleteTime(item: TimeTracking) {

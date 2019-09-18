@@ -63,6 +63,10 @@ export class SummaryDayComponent implements OnInit, OnDestroy {
     this.timeTrackingService.deleteTime(item);
   }
 
+  public edit(item) {
+    this.timeTrackingService.requestEditTime(item);
+  }
+
   public change() {
     this.daysOfWeekService.changeWorkingDays(this.dayIndex, this.isWorkDay);
   }
