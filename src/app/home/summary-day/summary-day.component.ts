@@ -11,7 +11,7 @@ import { isWorkingDay } from '../../utils/working-day';
   styleUrls: ['./summary-day.component.scss']
 })
 export class SummaryDayComponent {
-  times: Array<TimeTracking> = [];
+  times: TimeTracking[] = [];
   dayTitle = '';
   isWorkDay = false;
   total = 0;
@@ -21,7 +21,7 @@ export class SummaryDayComponent {
     this.isWorkDay = isWorkingDay(this.dayIndex, days);
   }
 
-  @Input() set data(times: Array<TimeTracking>) {
+  @Input() set data(times: TimeTracking[]) {
     if (times && times.length) {
       this.dayIndex = times[0].dayIndex;
       this.dayTitle = dayOfWeekMap[this.dayIndex];

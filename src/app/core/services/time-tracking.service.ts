@@ -9,7 +9,7 @@ import { TimeTracking } from '../interfaces/time-tracking.interface';
   providedIn: 'root'
 })
 export class TimeTrackingService {
-  private items: BehaviorSubject<Array<TimeTracking>>;
+  private items: BehaviorSubject<TimeTracking[]>;
   private processing: BehaviorSubject<boolean>;
   private workingDays: BehaviorSubject<any>;
 
@@ -17,7 +17,7 @@ export class TimeTrackingService {
   protected keyWorkingDays = 'workingDays';
 
   constructor(private localStorage: LocalStorage) {
-    this.items = new BehaviorSubject<Array<TimeTracking>>([]);
+    this.items = new BehaviorSubject<TimeTracking[]>([]);
     this.processing = new BehaviorSubject<boolean>(false);
     this.workingDays = new BehaviorSubject<any>({});
 
@@ -52,7 +52,7 @@ export class TimeTrackingService {
       );
   }
 
-  private updateTimesStorage(values: Array<TimeTracking>) {
+  private updateTimesStorage(values: TimeTracking[]) {
     this.processing.next(true);
 
     this.setToStorage(this.keyTimes, JSON.stringify(values))
@@ -67,7 +67,7 @@ export class TimeTrackingService {
 
   public init() {
     this.getFromStorage(this.keyTimes).subscribe((val: string) => {
-      const items: Array<TimeTracking> = JSON.parse(val);
+      const items: TimeTracking[] = JSON.parse(val);
       this.items.next(items || []);
     });
     this.getFromStorage(this.keyWorkingDays).subscribe((val: string) => {
@@ -84,7 +84,7 @@ export class TimeTrackingService {
     return this.processing.asObservable();
   }
 
-  public getTimeTracking(): Observable<Array<TimeTracking>> {
+  public getTimeTracking(): Observable<TimeTracking[]> {
     return this.items.asObservable();
   }
 
@@ -108,7 +108,7 @@ export class TimeTrackingService {
     const id: string = guid();
     const item: TimeTracking = new TimeTracking(id, from, to, dayIndex);
 
-    const items: Array<TimeTracking> = this.items.getValue();
+    const items: TimeTracking[] = this.items.getValue();
     items.push(item);
 
     this.updateTimesStorage(items);
@@ -120,7 +120,7 @@ export class TimeTrackingService {
       return;
     }
 
-    const items: Array<TimeTracking> = this.items.getValue()
+    const items: TimeTracking[] = this.items.getValue()
       .filter((i: TimeTracking) => i.id !== item.id);
 
     this.updateTimesStorage(items);
