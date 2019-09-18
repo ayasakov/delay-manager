@@ -4,6 +4,8 @@ import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
 import { DAY_HOURS, MINUTES, Time } from '../../utils/time';
 import { isWorkingDay } from '../../utils/working-day';
+import { DayOfWeekService } from '../../core/services/day-of-week.service';
+import { WorkingDay } from '../../core/interfaces/day-of-week.interface';
 
 @Component({
   selector: 'app-summary',
@@ -11,8 +13,7 @@ import { isWorkingDay } from '../../utils/working-day';
   styleUrls: ['./summary.component.scss']
 })
 export class SummaryComponent implements OnDestroy {
-  items$: Subscription;
-  days$: Subscription;
+  subscriptions: Subscription = new Subscription();
 
   summary = {};
   workingDays = {};
@@ -22,16 +23,18 @@ export class SummaryComponent implements OnDestroy {
     return Object.keys(this.summary);
   }
 
-  constructor(private timeTrackingService: TimeTrackingService) {
-    this.items$ = this.timeTrackingService.getTimeTracking()
-      .subscribe((items: Array<TimeTracking>) => this.timeTrackingProcess(items || []));
-    this.days$ = this.timeTrackingService.getWorkingDays()
-      .subscribe((value: any) => this.workingDaysProcess(value || {}));
+  constructor(private timeTrackingService: TimeTrackingService, private dayOfWeekService: DayOfWeekService) {
+    const items$ = this.timeTrackingService.getTimeTracking()
+      .subscribe((items: TimeTracking[]) => this.timeTrackingProcess(items || []));
+    const days$ = this.dayOfWeekService.getWorkingDays()
+      .subscribe((value: WorkingDay) => this.workingDaysProcess(value));
+
+    this.subscriptions.add(items$);
+    this.subscriptions.add(days$);
   }
 
   ngOnDestroy() {
-    this.items$.unsubscribe();
-    this.days$.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   private timeTrackingProcess(items: Array<TimeTracking>) {

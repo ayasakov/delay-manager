@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { guid } from '../../utils/guid';
 import { catchError } from 'rxjs/operators';
 import { TimeTracking } from '../interfaces/time-tracking.interface';
+import { DayOfWeekService } from './day-of-week.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,51 +12,42 @@ import { TimeTracking } from '../interfaces/time-tracking.interface';
 export class TimeTrackingService {
   private items: BehaviorSubject<TimeTracking[]>;
   private processing: BehaviorSubject<boolean>;
-  private workingDays: BehaviorSubject<any>;
 
   protected keyTimes = 'times';
-  protected keyWorkingDays = 'workingDays';
 
-  constructor(private localStorage: LocalStorage) {
+  constructor(private localStorage: LocalStorage, private dayOfWeekService: DayOfWeekService) {
     this.items = new BehaviorSubject<TimeTracking[]>([]);
     this.processing = new BehaviorSubject<boolean>(false);
-    this.workingDays = new BehaviorSubject<any>({});
 
     this.init();
   }
 
-  private getFromStorage(key: string): Observable<any> {
-    return this.localStorage.getItem(key);
+  private init() {
+    this.getFromStorage().subscribe((val: string) => {
+      const items: TimeTracking[] = JSON.parse(val);
+      this.items.next(items || []);
+    });
   }
 
-  private setToStorage(key: string, value: string) {
-    return this.localStorage.setItem(key, value)
+  private getFromStorage(): Observable<any> {
+    return this.localStorage.getItem(this.keyTimes);
+  }
+
+  private setToStorage(value: string) {
+    return this.localStorage.setItem(this.keyTimes, value)
       .pipe(catchError(
         (err) => {
           console.log('err: error during cache update.', err);
-          const prev: any = this.keyTimes === key ? this.items.getValue() : this.workingDays.getValue();
+          const prev: TimeTracking[] = this.items.getValue();
           return of(prev);
         })
-      );
-  }
-
-  private updateWorkingDaysStorage(value: any) {
-    this.processing.next(true);
-
-    this.setToStorage(this.keyWorkingDays, JSON.stringify(value))
-      .subscribe(
-        () => {
-          this.workingDays.next(value);
-          this.processing.next(false);
-        },
-        () => this.processing.next(false)
       );
   }
 
   private updateTimesStorage(values: TimeTracking[]) {
     this.processing.next(true);
 
-    this.setToStorage(this.keyTimes, JSON.stringify(values))
+    this.setToStorage(JSON.stringify(values))
       .subscribe(
         () => {
           this.items.next(values);
@@ -65,38 +57,12 @@ export class TimeTrackingService {
       );
   }
 
-  public init() {
-    this.getFromStorage(this.keyTimes).subscribe((val: string) => {
-      const items: TimeTracking[] = JSON.parse(val);
-      this.items.next(items || []);
-    });
-    this.getFromStorage(this.keyWorkingDays).subscribe((val: string) => {
-      const value: any = JSON.parse(val);
-      this.workingDays.next(value || {});
-    });
-  }
-
-  public getWorkingDays(): Observable<any> {
-    return this.workingDays.asObservable();
-  }
-
   public getStatus(): Observable<boolean> {
     return this.processing.asObservable();
   }
 
   public getTimeTracking(): Observable<TimeTracking[]> {
     return this.items.asObservable();
-  }
-
-  public changeWorkingDays(dayIndex: number, value: boolean) {
-    if (!dayIndex || dayIndex > 6 || dayIndex < 0) {
-      console.log('err: working days weren\'t updated');
-      return;
-    }
-
-    const workingDays: any = this.workingDays.getValue();
-    workingDays[dayIndex] = value;
-    this.updateWorkingDaysStorage(workingDays);
   }
 
   public addTime(from: string, to: string, dayIndex: number) {
@@ -128,6 +94,6 @@ export class TimeTrackingService {
 
   public clearHistory() {
     this.updateTimesStorage([]);
-    this.updateWorkingDaysStorage({});
+    this.dayOfWeekService.clearHistory();
   }
 }

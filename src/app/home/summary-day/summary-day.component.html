@@ -4,6 +4,6 @@
   {{ time.from }} - {{ time.to }} <button (click)="delete(time)">x</button>
 </ng-container>
 
-{{ formattedTotal | humanHours }}
+<div>{{ total | humanHours }}</div>
 
 <mat-checkbox color="primary" [(ngModel)]="isWorkDay" (change)="change()">Working day</mat-checkbox>

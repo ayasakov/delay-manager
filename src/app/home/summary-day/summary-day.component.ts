@@ -1,25 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
-import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { dayOfWeekMap } from '../../const/date-title';
 import { DAY_HOURS, MINUTES, Time } from '../../utils/time';
-import { isWorkingDay } from '../../utils/working-day';
+import { DayOfWeekService } from '../../core/services/day-of-week.service';
+import { TimeTrackingService } from '../../core/services/time-tracking.service';
+import { Subscription } from 'rxjs';
+import { WorkingDay } from '../../core/interfaces/day-of-week.interface';
 
 @Component({
   selector: 'app-summary-day',
   templateUrl: './summary-day.component.html',
   styleUrls: ['./summary-day.component.scss']
 })
-export class SummaryDayComponent {
+export class SummaryDayComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription = new Subscription();
+
   times: TimeTracking[] = [];
   dayTitle = '';
   isWorkDay = false;
   total = 0;
   dayIndex = -1;
-
-  @Input() set workingDays(days: any) {
-    this.isWorkDay = isWorkingDay(this.dayIndex, days);
-  }
 
   @Input() set data(times: TimeTracking[]) {
     if (times && times.length) {
@@ -37,16 +37,33 @@ export class SummaryDayComponent {
   }
 
   get formattedTotal(): number {
-    return this.isWorkDay ? this.total - DAY_HOURS * MINUTES : this.total;
+    console.log(DAY_HOURS * MINUTES - this.total);
+    return this.isWorkDay ? DAY_HOURS * MINUTES - this.total : this.total;
   }
 
-  constructor(private timeTrackingService: TimeTrackingService) { }
+  constructor(
+    private daysOfWeekService: DayOfWeekService,
+    private timeTrackingService: TimeTrackingService,
+  ) {
+  }
+
+  ngOnInit() {
+    const days$ = this.daysOfWeekService.getWorkingDays().subscribe(
+      (days: WorkingDay) => this.isWorkDay = days[this.dayIndex] || false
+    );
+
+    this.subscriptions.add(days$);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   public delete(item) {
     this.timeTrackingService.deleteTime(item);
   }
 
   public change() {
-    this.timeTrackingService.changeWorkingDays(this.dayIndex, this.isWorkDay);
+    this.daysOfWeekService.changeWorkingDays(this.dayIndex, this.isWorkDay);
   }
 }

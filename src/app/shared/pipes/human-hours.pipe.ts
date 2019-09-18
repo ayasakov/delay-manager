@@ -7,7 +7,7 @@ import { Time } from '../../utils/time';
 })
 export class HumanHoursPipe implements PipeTransform {
 
-  transform(value: any, args?: any): any {
+  transform(value: number): string {
     return _.isNaN(Number(value)) ? '-' : Time.getHumanFormat(value);
   }
 
