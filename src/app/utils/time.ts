@@ -19,13 +19,15 @@ export class Time {
   }
 
   static getHumanFormat(minutes: number) {
-    const h = Math.floor(minutes / MINUTES);
-    const m = minutes - h * MINUTES;
+    const h = Math.floor(Math.abs(minutes) / MINUTES);
+    const m = Math.abs(minutes) - h * MINUTES;
 
     const h_str = `${h}`.length === 1 ? `0${h}` : `${h}`;
     const m_str = `${m}`.length === 1 ? `0${m}` : `${m}`;
 
-    return `${h_str}:${m_str}`;
+    const sign = minutes < 0 ? '-' : '';
+
+    return `${sign}${h_str}:${m_str}`;
   }
 
   constructor(time: string) {

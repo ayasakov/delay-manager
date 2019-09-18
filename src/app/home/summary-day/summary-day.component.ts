@@ -21,6 +21,8 @@ export class SummaryDayComponent implements OnInit, OnDestroy {
   total = 0;
   dayIndex = -1;
 
+  diff = 0;
+
   @Input() set data(times: TimeTracking[]) {
     if (times && times.length) {
       this.dayIndex = times[0].dayIndex;
@@ -36,11 +38,6 @@ export class SummaryDayComponent implements OnInit, OnDestroy {
     this.times = [];
   }
 
-  get formattedTotal(): number {
-    console.log(DAY_HOURS * MINUTES - this.total);
-    return this.isWorkDay ? DAY_HOURS * MINUTES - this.total : this.total;
-  }
-
   constructor(
     private daysOfWeekService: DayOfWeekService,
     private timeTrackingService: TimeTrackingService,
@@ -49,7 +46,10 @@ export class SummaryDayComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const days$ = this.daysOfWeekService.getWorkingDays().subscribe(
-      (days: WorkingDay) => this.isWorkDay = days[this.dayIndex] || false
+      (days: WorkingDay) => {
+        this.isWorkDay = days[this.dayIndex] || false;
+        this.diff = this.isWorkDay ? DAY_HOURS * MINUTES : 0;
+      }
     );
 
     this.subscriptions.add(days$);

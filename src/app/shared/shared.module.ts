@@ -34,7 +34,7 @@ import { HumanHoursPipe } from './pipes/human-hours.pipe';
     HumanHoursPipe,
   ],
   declarations: [
-    HumanHoursPipe
+    HumanHoursPipe,
   ],
 })
 export class SharedModule {
