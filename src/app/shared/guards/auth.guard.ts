@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 
 @Injectable()
@@ -9,13 +11,16 @@ export class AuthGuard implements CanActivateChild {
               private auth: AuthService) {
   }
 
-  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!this.auth.isAuthenticated()) {
-      this.router.navigate(['/auth', 'login'])
-        .then(() => {
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    return this.auth.getUserInfo().pipe(
+      map(() => true),
+      catchError(() => of(false)),
+      tap((isAuthenticated) => {
+        if (!isAuthenticated) {
           this.auth.interruptedUrl = state.url;
-        });
-    }
-    return this.auth.isAuthenticated();
+          this.router.navigate(['/auth', 'login']);
+        }
+      })
+    );
   }
 }

@@ -14,14 +14,13 @@ class TokenService {
       .then((data) => {
         if (data.data.ok) {
           req.session.user = data.data;
-          res.redirect('/home');
+          res.status(200).json(data.data);
         } else {
-          console.log('Err:', data.data.error);
-          res.redirect('/auth/login');
+          res.status(500).json(data.data);
         }
       })
       .catch((error) => {
-        res.status(500).error(error);
+        res.status(500).json(error);
       })
   }
 }

@@ -3,16 +3,31 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
 const apiRouter = require('./routes/api');
-const tokenRouter = require('./routes/token');
+
+const allowedOrigins = ['http://localhost:3333', 'http://localhost:8080', 'http://work-delay.herokuapp.com'];
 
 const undefinedSession = require('./middlewares/undefined-session');
 
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
 // initialize body-parser to parse incoming parameters requests to req.body
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // initialize cookie-parser to allow us access the cookies stored in the browser.
 app.use(cookieParser());
@@ -40,7 +55,6 @@ app.use(express.static(__dirname + '/dist/work-delay'));
 
 // routes
 app.use('/api', apiRouter);
-app.use('/token', tokenRouter);
 
 app.get('/*', function(req,res) {
   res.sendFile(path.join(__dirname + '/dist/work-delay/index.html'));

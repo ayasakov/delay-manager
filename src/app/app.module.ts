@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { HttpClientModule } from '@angular/common/http';
+import { UnAuthGuard } from './shared/guards/un-auth.guard';
 
 @NgModule({
   declarations: [
@@ -15,8 +17,12 @@ import { AuthGuard } from './shared/guards/auth.guard';
     BrowserAnimationsModule,
     AppRoutingModule,
     CoreModule,
+    HttpClientModule,
   ],
-  providers: [AuthGuard],
+  providers: [
+    AuthGuard,
+    UnAuthGuard,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
