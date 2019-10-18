@@ -13,8 +13,10 @@ router.get('/token', (req, res, next) => {
   const params = req.query;
   if ('code' in params) {
     tokenService.obtainToken(req, res, params.code);
+  } else if ('error' in params) {
+    res.status(401).json({ error: params.error });
   } else {
-    res.redirect('/auth/login');
+    res.status(500).json(params);
   }
 });
 

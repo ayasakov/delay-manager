@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const query$ = this.route.queryParams
-      .pipe(filter((params: { code: string }) => params && !!params.code))
+      .pipe(filter((params: { code?: string, error?: string }) => params && (!!params.code || !!params.error)))
       .subscribe((params: { code: string }) => {
         this.authService.login(params).subscribe(
           () => this.router.navigate(['/home']),
