@@ -43,7 +43,10 @@ export class AuthService {
       of(this._user) :
       this.http.get<ISlackUser>(getUrlForEndpoint('/api/user'), {withCredentials: true})
         .pipe(tap(
-          () => this.authenticateStream.next(true),
+          (user) => {
+            this._user = user;
+            this.authenticateStream.next(true);
+          },
           () => this.authenticateStream.next(false),
         ));
   }
