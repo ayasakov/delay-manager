@@ -4,9 +4,9 @@
   <app-summary-day [data]="summary[day]"></app-summary-day>
 </div>
 
-<hr *ngIf="total" />
+<hr />
 
-<div class="total" *ngIf="total">
+<div class="total">
   <span>Total</span>
   <span>{{ total | humanHours }}</span>
 </div>
