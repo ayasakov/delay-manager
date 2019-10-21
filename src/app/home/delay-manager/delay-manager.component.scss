@@ -11,8 +11,16 @@
   align-items: center;
   justify-content: center;
 
+  margin-right: 60px;
+  @media only screen and (min-width: 768px) {
+    margin-right: initial;
+  }
+
   & > mat-form-field {
-    width: 400px;
+    width: 240px;
+    @media only screen and (min-width: 768px) {
+      width: 400px;
+    }
   }
 
   & > button {
@@ -21,7 +29,7 @@
 }
 
 .profile {
-  position: absolute;
+  position: fixed;
   bottom: 8px;
   left: 8px;
   color: #3f51b5;

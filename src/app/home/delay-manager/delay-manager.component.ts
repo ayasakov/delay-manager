@@ -62,7 +62,8 @@ export class DelayManagerComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.form.valid) {
-      const { id, start, end, dayOfWeek } = this.form.getRawValue();
+      const {id, start, end, dayOfWeek} = this.form.getRawValue();
+      this.form.reset();
 
       if (id) {
         this.timeTrackingService.editTime({
@@ -72,7 +73,6 @@ export class DelayManagerComponent implements OnInit, OnDestroy {
           to: end,
         });
 
-        this.form.reset();
         return;
       }
       this.timeTrackingService.addTime(start, end, dayOfWeek);

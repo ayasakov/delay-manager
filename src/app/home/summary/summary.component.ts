@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TimeTrackingService } from '../../core/services/time-tracking.service';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
@@ -22,6 +22,8 @@ export class SummaryComponent implements OnDestroy {
   get days() {
     return Object.keys(this.summary);
   }
+
+  @HostBinding('class.opened') opened = false;
 
   constructor(private timeTrackingService: TimeTrackingService, private dayOfWeekService: DayOfWeekService) {
     const items$ = this.timeTrackingService.getTimeTracking()
@@ -68,5 +70,9 @@ export class SummaryComponent implements OnDestroy {
 
   public clear() {
     this.timeTrackingService.clearHistory();
+  }
+
+  public panel() {
+    this.opened = !this.opened;
   }
 }

@@ -1,10 +1,30 @@
 :host {
-  flex: 0 0 300px;
   background-color: #4A4A4A;
   color: #FFF;
-  padding: 10px;
+  box-sizing: border-box;
 
-  position: relative;
+  position: fixed;
+  width: 320px;
+  padding: 10px 10px 10px 60px;
+
+  right: -260px;
+  top: 0;
+  bottom: 0;
+
+  &.opened {
+    transform: translateX(-260px);
+  }
+
+  @media only screen and (min-width: 768px) {
+    flex: 0 0 300px;
+    width: 300px;
+    padding: 10px;
+    position: relative;
+
+    top: initial;
+    right: initial;
+    bottom: initial;
+  }
 
   & > hr {
     margin: 16px 0;
@@ -33,4 +53,15 @@
 
   left: 50%;
   transform: translateX(-50%);
+}
+
+.toggle {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+
+  @media only screen and (min-width: 768px) {
+    display: none;
+    pointer-events: none;
+  }
 }
