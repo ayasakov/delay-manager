@@ -16,7 +16,7 @@ class TokenService {
           req.session.user = data.data;
           res.status(200).json(data.data);
         } else {
-          res.status(500).json(data.data);
+          res.status(401).json(data.data);
         }
       })
       .catch((error) => {
