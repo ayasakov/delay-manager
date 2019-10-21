@@ -5,8 +5,10 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { AuthGuard } from './shared/guards/auth.guard';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { UnAuthGuard } from './shared/guards/un-auth.guard';
+import { MatProgressBarModule } from '@angular/material';
+import { RequestInterceptor } from './shared/interceptors/request.interceptor';
 
 @NgModule({
   declarations: [
@@ -18,10 +20,17 @@ import { UnAuthGuard } from './shared/guards/un-auth.guard';
     AppRoutingModule,
     CoreModule,
     HttpClientModule,
+    // progress bar
+    MatProgressBarModule,
   ],
   providers: [
     AuthGuard,
     UnAuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

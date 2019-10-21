@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.authService.login(params).subscribe(
           () => this.router.navigate(['/home']),
           (error) => {
-            // this.router.navigate(['/auth/login']);
+            this.router.navigate(['/auth/login']);
             console.log('Err:', error);
           }
         );
