@@ -5,6 +5,9 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 
+const SLACK_OAUTH_URL = (slackClientId: string, redirectUri: string): string =>
+  `https://slack.com/oauth/authorize?scope=identity.basic&client_id=${slackClientId}&redirect_uri=${redirectUri}`;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,12 +16,12 @@ import { AuthService } from '../../core/services/auth.service';
 export class LoginComponent implements OnInit, OnDestroy {
   subscription: Subscription = new Subscription();
 
-  slackClientId: string = environment.slackClientId;
-  redirectUri: string = environment.tokenRedirectUri;
+  oauthUrl: string;
 
   constructor(private route: ActivatedRoute,
               private authService: AuthService,
               private router: Router) {
+    this.oauthUrl = SLACK_OAUTH_URL(environment.slackClientId, environment.tokenRedirectUri);
   }
 
   ngOnInit() {

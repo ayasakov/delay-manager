@@ -9,7 +9,8 @@ const app = express();
 
 const apiRouter = require('./routes/api');
 
-const allowedOrigins = ['http://localhost:3333', 'http://localhost:8080', 'http://work-delay.herokuapp.com'];
+const allowedOrigins = process.env.PRODUCTION === 'true' ?
+  ['http://work-delay.herokuapp.com'] : ['http://localhost:3333', 'http://localhost:8080'];
 
 const undefinedSession = require('./middlewares/undefined-session');
 
@@ -39,7 +40,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: 600000
+    expires: 3600000,
   }
 }));
 

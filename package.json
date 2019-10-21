@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "node server.js",
-    "dev:server": "nodemon --inspect server.js",
+    "dev:server": "nodemon -r dotenv/config --inspect server.js",
     "dev:client": "ng serve --port 3333",
+    "dev:build": "ng build",
     "build": "ng build --prod",
     "postinstall": "ng build --prod",
     "lint": "ng lint"
@@ -46,6 +47,7 @@
     "@angular/language-service": "8.2.11",
     "@types/node": "12.11.1",
     "codelyzer": "5.1.2",
+    "dotenv": "8.2.0",
     "enhanced-resolve": "4.1.1",
     "nodemon": "1.19.4",
     "rxjs-tslint": "^0.1.7",

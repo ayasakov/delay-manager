@@ -5,11 +5,17 @@ const OBTAIN_TOKEN_ENDPOINT = (clientId, clientSecret, userCode) =>
 
 class TokenService {
   constructor() {
-    this.clientId = '3800862307.723008059171';
-    this.clientSecret = '1043583f26cc42fc456509cc0495504e';
+    this.clientId = process.env.SLACK_CLIENT_ID || '';
+    this.clientSecret = process.env.SLACK_CLIENT_SECRET || '';
   }
 
   obtainToken(req, res, code) {
+    if (!this.clientId || !this.clientSecret) {
+      console.log('Err: do not fill slack client id and secret');
+      res.status(500).json({ error: 'do not fill slack client id and secret' });
+      return;
+    }
+
     axios.get(OBTAIN_TOKEN_ENDPOINT(this.clientId, this.clientSecret, code))
       .then((data) => {
         if (data.data.ok) {
