@@ -6,6 +6,7 @@ import { DAY_HOURS, MINUTES, Time } from '../../utils/time';
 import { isWorkingDay } from '../../utils/working-day';
 import { DayOfWeekService } from '../../core/services/day-of-week.service';
 import { WorkingDay } from '../../core/interfaces/day-of-week.interface';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-summary',
@@ -25,7 +26,9 @@ export class SummaryComponent implements OnDestroy {
 
   @HostBinding('class.opened') opened = false;
 
-  constructor(private timeTrackingService: TimeTrackingService, private dayOfWeekService: DayOfWeekService) {
+  constructor(private timeTrackingService: TimeTrackingService,
+              private dayOfWeekService: DayOfWeekService,
+              private authService: AuthService) {
     const items$ = this.timeTrackingService.getTimeTracking()
       .subscribe((items: TimeTracking[]) => this.timeTrackingProcess(items || []));
     const days$ = this.dayOfWeekService.getWorkingDays()
@@ -74,5 +77,11 @@ export class SummaryComponent implements OnDestroy {
 
   public panel() {
     this.opened = !this.opened;
+  }
+
+  public getMessages() {
+    this.authService.getMessages().subscribe((times: TimeTracking[]) => {
+      (times || []).forEach(t => this.timeTrackingService.addTime(t.from, t.to, t.dayIndex, t.messageFrom, t.messageTo));
+    });
   }
 }

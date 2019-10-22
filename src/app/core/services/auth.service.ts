@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { getUrlForEndpoint } from '../../utils/url-for-endpoint';
 import { ISlackToken, ISlackUser } from '../interfaces/slack-token.interface';
+import { TimeTracking } from '../interfaces/time-tracking.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -49,5 +50,9 @@ export class AuthService {
           },
           () => this.authenticateStream.next(false),
         ));
+  }
+
+  public getMessages(): Observable<TimeTracking[]> {
+    return this.http.get<TimeTracking[]>(getUrlForEndpoint('/api/message'), {withCredentials: true});
   }
 }

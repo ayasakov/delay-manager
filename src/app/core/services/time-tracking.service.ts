@@ -72,14 +72,14 @@ export class TimeTrackingService {
       .pipe(filter(time => !!time));
   }
 
-  public addTime(from: string, to: string, dayIndex: number) {
+  public addTime(from: string, to: string, dayIndex: number, messageFrom = '', messageTo = '') {
     if (!from || !to || !dayIndex) {
       console.log('err: time track wasn\'t added');
       return;
     }
 
     const id: string = guid();
-    const item: TimeTracking = new TimeTracking(id, from, to, dayIndex);
+    const item: TimeTracking = new TimeTracking(id, from, to, dayIndex, messageFrom, messageTo);
 
     const items: TimeTracking[] = this.items.getValue();
     items.push(item);
@@ -95,6 +95,9 @@ export class TimeTrackingService {
     const times: TimeTracking[] = [...this.items.getValue()];
     const idx = times.findIndex(t => t.id === time.id);
     if (idx > -1) {
+      time.messageFrom = times[idx].messageFrom || '';
+      time.messageTo = times[idx].messageTo || '';
+
       times.splice(idx, 1, time);
       this.updateTimesStorage(times);
       this.requestEditTime(null);
