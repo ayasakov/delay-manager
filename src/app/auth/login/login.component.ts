@@ -5,8 +5,9 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 
+const SLACK_SCOPE = 'channels:history,channels:read,groups:history,groups:read,im:read,mpim:read';
 const SLACK_OAUTH_URL = (slackClientId: string, redirectUri: string): string =>
-  `https://slack.com/oauth/authorize?scope=identity.basic&client_id=${slackClientId}&redirect_uri=${redirectUri}`;
+  `https://slack.com/oauth/authorize?scope=${SLACK_SCOPE}&client_id=${slackClientId}&redirect_uri=${redirectUri}`;
 
 @Component({
   selector: 'app-login',
