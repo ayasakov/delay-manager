@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { getUrlForEndpoint } from '../../utils/url-for-endpoint';
 import { ISlackToken, ISlackUser } from '../interfaces/slack-token.interface';
 import { TimeTracking } from '../interfaces/time-tracking.interface';
@@ -16,6 +16,14 @@ export class AuthService {
   private _user: ISlackUser;
 
   constructor(private http: HttpClient) {
+  }
+
+  static toFixed(value) {
+    return ('0' + `${value}`).slice(-2);
+  }
+
+  static convertDate(date: Date) {
+    return `${AuthService.toFixed(date.getHours())}:${AuthService.toFixed(date.getMinutes())}`;
   }
 
   public set interruptedUrl(url: string) {
@@ -53,6 +61,14 @@ export class AuthService {
   }
 
   public getMessages(): Observable<TimeTracking[]> {
-    return this.http.get<TimeTracking[]>(getUrlForEndpoint('/api/message'), {withCredentials: true});
+    return this.http.get<TimeTracking[]>(getUrlForEndpoint('/api/message'), {withCredentials: true}).pipe(
+      map((times: TimeTracking[]) => {
+        times.forEach((t: TimeTracking) => {
+          t.from = AuthService.convertDate(new Date(t.from));
+          t.to = AuthService.convertDate(new Date(t.to));
+        });
+        return times;
+      })
+    );
   }
 }
