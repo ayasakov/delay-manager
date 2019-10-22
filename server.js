@@ -7,12 +7,12 @@ const cors = require('cors');
 
 const app = express();
 
-const apiRouter = require('./routes/api');
+const apiRouter = require('./server-src/routes/api');
 
 const allowedOrigins = process.env.PRODUCTION === 'true' ?
   ['http://work-delay.herokuapp.com'] : ['http://localhost:3333', 'http://localhost:8080'];
 
-const undefinedSession = require('./middlewares/undefined-session');
+const undefinedSession = require('./server-src/middlewares/undefined-session');
 
 app.use(cors({
   origin: (origin, callback) => {
