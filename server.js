@@ -1,9 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
 const path = require('path');
 const cors = require('cors');
+
+const pg = require('pg');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 const app = express();
 
@@ -35,12 +42,14 @@ app.use(cookieParser());
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
-  key: 'user_sid',
-  secret: 'workdelayapp',
+  store: new pgSession({
+    pool: pgPool,
+  }),
+  secret: process.env.COOKIE_SECRET || 'workdelayapp',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: 3600000,
+    expires: 30 * 24 * 60 * 60 * 1000, // 30 days
   }
 }));
 

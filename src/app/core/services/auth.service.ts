@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { getUrlForEndpoint } from '../../utils/url-for-endpoint';
-import { ISlackToken, ISlackUser } from '../interfaces/slack-token.interface';
+import { ISlackToken } from '../interfaces/slack-token.interface';
 import { TimeTracking } from '../interfaces/time-tracking.interface';
+import { Profile } from '../interfaces/profile.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   private authenticateStream = new BehaviorSubject<boolean>(false);
 
   private _interruptedUrl: string;
-  private _user: ISlackUser;
+  private _user: Profile;
 
   constructor(private http: HttpClient) {
   }
@@ -38,26 +39,32 @@ export class AuthService {
     return this.authenticateStream.asObservable();
   }
 
-  public login(params: { [key: string]: string }): Observable<ISlackToken> {
-    return this.http.get<ISlackToken>(getUrlForEndpoint('/api/token'), {params, withCredentials: true}).pipe(
-      tap((response: ISlackToken) => {
-        this._user = response.user;
-        this.authenticateStream.next(true);
-      })
+  public getLoginStatus(): Observable<boolean> {
+    if (this.isAuthenticated()) {
+      return of(true);
+    }
+
+    return this.http.get<boolean>(getUrlForEndpoint('/api/is-authenticated'), {withCredentials: true}).pipe(
+      map(() => true),
+      catchError(() => of(false)),
+      tap(status => this.authenticateStream.next(status)),
     );
   }
 
-  public getUserInfo(): Observable<ISlackUser> {
+  public login(params: { [key: string]: string }): Observable<ISlackToken> {
+    return this.http.get<ISlackToken>(getUrlForEndpoint('/api/token'), {params, withCredentials: true}).pipe(
+      tap(
+        () => this.authenticateStream.next(true),
+        () => this.authenticateStream.next(false),
+      )
+    );
+  }
+
+  public getUserInfo(): Observable<Profile> {
     return this._user ?
       of(this._user) :
-      this.http.get<ISlackUser>(getUrlForEndpoint('/api/user'), {withCredentials: true})
-        .pipe(tap(
-          (user) => {
-            this._user = user;
-            this.authenticateStream.next(true);
-          },
-          () => this.authenticateStream.next(false),
-        ));
+      this.http.get<Profile>(getUrlForEndpoint('/api/user'), {withCredentials: true})
+        .pipe(tap((user) => this._user = user));
   }
 
   public getMessages(): Observable<TimeTracking[]> {

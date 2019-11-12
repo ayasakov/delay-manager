@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { DayOfWeek } from '../../core/interfaces/day-of-week.interface';
 import { TimeTracking } from '../../core/interfaces/time-tracking.interface';
 import { AuthService } from '../../core/services/auth.service';
-import { ISlackUser } from '../../core/interfaces/slack-token.interface';
+import { Profile } from '../../core/interfaces/profile.interface';
 
 @Component({
   selector: 'app-delay-manager',
@@ -26,7 +26,7 @@ export class DelayManagerComponent implements OnInit, OnDestroy {
   days: Array<DayOfWeek> = Object.keys(dayOfWeekMap)
     .map((d: string) => new DayOfWeek(d, dayOfWeekMap[d]));
 
-  user: ISlackUser;
+  user: Profile;
 
   isProcessing = false;
 
@@ -52,7 +52,8 @@ export class DelayManagerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const user$ = this.authService.getUserInfo().subscribe((user: ISlackUser) => this.user = user);
+    const user$ = this.authService.getUserInfo()
+      .subscribe((user: Profile) => this.user = user);
     this.subscriptions.add(user$);
   }
 

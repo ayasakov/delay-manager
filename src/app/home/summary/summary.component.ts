@@ -81,7 +81,11 @@ export class SummaryComponent implements OnDestroy {
 
   public getMessages() {
     this.authService.getMessages().subscribe((times: TimeTracking[]) => {
-      (times || []).forEach(t => this.timeTrackingService.addTime(t.from, t.to, t.dayIndex, t.messageFrom, t.messageTo));
+      (times || []).forEach(t => {
+        if (!(t.dayIndex in this.summary)) {
+          this.timeTrackingService.addTime(t.from, t.to, t.dayIndex, t.messageFrom, t.messageTo)
+        }
+      });
     });
   }
 }

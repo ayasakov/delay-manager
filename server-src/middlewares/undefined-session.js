@@ -1,6 +1,6 @@
 const undefinedSession = (req, res, next) => {
-  if (req.cookies.user_sid && !req.session.user) {
-    res.clearCookie('user_sid');
+  if (req.cookies['connect.sid'] && !req.session.user) {
+    res.clearCookie('connect.sid');
   }
   next();
 };

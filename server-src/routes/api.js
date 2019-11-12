@@ -4,6 +4,7 @@ const sessionChecker = require('../middlewares/session-checker');
 
 const tokenService = require('../services/token-service');
 const messageService = require('../services/message-service');
+const userService = require('../services/user-service');
 
 const router = express.Router();
 
@@ -22,8 +23,12 @@ router.get('/token', (req, res, next) => {
   }
 });
 
+router.get('/is-authenticated', sessionChecker, (req, res, next) => {
+  res.status(200).json({ ok: true });
+});
+
 router.get('/user', sessionChecker, (req, res, next) => {
-  res.status(200).json(req.session.user.user);
+  userService.getUser(req, res);
 });
 
 router.get('/message', sessionChecker, (req, res, next) => {

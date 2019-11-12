@@ -12,9 +12,7 @@ export class AuthGuard implements CanActivateChild {
   }
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.auth.getUserInfo().pipe(
-      map(() => true),
-      catchError(() => of(false)),
+    return this.auth.getLoginStatus().pipe(
       tap((isAuthenticated) => {
         if (!isAuthenticated) {
           this.auth.interruptedUrl = state.url;
